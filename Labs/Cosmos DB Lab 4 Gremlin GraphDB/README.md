@@ -13,7 +13,7 @@ The Sample has two projects:
 
 ## How to run the sample ##
 ### Uploading the sample data ###
-Uploading the sample data is done via the console application project included in this quick start. The sample app is already configured to point to your collection you created as part of the quick start experience in the portal.
+Uploading the sample data is done via the console application project included in this quick start. 
 2. Open the <font color='lightblue'>/tools/GraphDataUploaderSample.sln</font> solution in Visual Studio.
 3. Verify your collection information in the App.Config. if you downloaded this sample from Azure portal quickstart blade, this is all already pre-configured for you. If you downloaded the sample from the github, you need to create the collection yourself and set these settings.
 
