@@ -158,7 +158,7 @@
                     if (documentClientException.Error?.Code == "NotFound")
                     {
                         Console.WriteLine("Your Database, \"" + databaseId + "\" does not exist. Creating it...");
-                        await client.CreateDatabaseIfNotExistsAsync(new Database {Id = databaseId});
+                        await client.CreateDatabaseIfNotExistsAsync(new Database { Id = databaseId });
                         Console.WriteLine("Created Database!");
                     }
                     else
@@ -255,7 +255,9 @@
         private static async Task<bool> UploadEdge(Edge edge)
         {
             string sourceNodePrimaryKey = nodes[edge.SourceNode].NodeIdAttribute;
-            string destNodePrimaryKey = nodes[edge.DestinationNode].NodeIdAttribute;
+            // Target bit of a hack to fix Character to Character Edges
+            // In other cases the Nodes have different Id property names
+            string destNodePrimaryKey = "Target" + nodes[edge.DestinationNode].NodeIdAttribute;
 
             GraphCommand graphCommand = new GraphCommand(connection);
 
@@ -296,7 +298,12 @@
                             }
                         }
 
-                        insertEdgeInstruction = insertEdgeInstruction.Property("EdgeId_Internal", edgeInternalId).To(graphCommand.g().V().Has(destNodePrimaryKey, keyval[destNodePrimaryKey]));
+                        // edgeInternalId's need to be unique per dest node
+                        edgeInternalId += keyval[destNodePrimaryKey];
+
+                        // insertEdgeInstruction = insertEdgeInstruction.Property("EdgeId_Internal", edgeInternalId).To(graphCommand.g().V().Has(destNodePrimaryKey, keyval[destNodePrimaryKey]));
+                        // Hardcoding Id since we need to map TargetId to Id for Character to Character connection
+                        insertEdgeInstruction = insertEdgeInstruction.Property("EdgeId_Internal", edgeInternalId).To(graphCommand.g().V().Has("Id", keyval[destNodePrimaryKey]));
 
                         if (!allEdgesInternalIds.Contains(edgeInternalId))
                         {
